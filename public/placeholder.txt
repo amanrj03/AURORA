@@ -1,0 +1,1 @@
+Place your custom logo image in this directory with the file name 'logo.png'. The Vantage platform will automatically read it and replace the vector icon.
