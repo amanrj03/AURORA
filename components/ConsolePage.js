@@ -85,7 +85,8 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
     setLogs((l) => [...l, `[${new Date().toLocaleTimeString()}] ${m}`]);
 
   useEffect(() => {
-    const savedHistory = localStorage.getItem('invest_history');
+    const historyKey = `invest_history_${user?.id || 'guest'}`;
+    const savedHistory = localStorage.getItem(historyKey);
     const savedRisk = localStorage.getItem('invest_risk');
     if (savedHistory) {
       try {
@@ -97,6 +98,8 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
       } catch (e) {
         console.error('Error parsing history', e);
       }
+    } else {
+      setHistory([]); // Clear history for users with no records
     }
     if (savedRisk) {
       setRiskTolerance(savedRisk);
@@ -106,7 +109,7 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
       setCompany(initialQuery);
       analyze(initialQuery);
     }
-  }, [initialQuery]);
+  }, [initialQuery, user]);
 
   const changeRiskTolerance = (r) => {
     setRiskTolerance(r);
@@ -165,10 +168,11 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
         at: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         result: data,
       };
+      const historyKey = `invest_history_${user?.id || 'guest'}`;
       setHistory((h) => {
         const filtered = h.filter((item) => item?.result?.ticker !== data.ticker);
         const updated = [newItem, ...filtered].slice(0, 10);
-        localStorage.setItem('invest_history', JSON.stringify(updated));
+        localStorage.setItem(historyKey, JSON.stringify(updated));
         return updated;
       });
     } catch (e) {
@@ -189,8 +193,9 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
   };
 
   const clearHistory = () => {
+    const historyKey = `invest_history_${user?.id || 'guest'}`;
     setHistory([]);
-    localStorage.removeItem('invest_history');
+    localStorage.removeItem(historyKey);
     pushLog("✓ History cleared");
   };
 
