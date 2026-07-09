@@ -47,12 +47,12 @@ export default function HistoricalEarningsChart({ history = [] }) {
 
   return (
     <div className="rounded-xl border border-white/5 bg-[#11161D] p-5">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between border-b border-white/5 pb-3">
         <div>
           <h4 className="text-[10px] uppercase tracking-[0.25em] text-[#98A2B3]">Financial Trajectory</h4>
-          <span className="text-xs text-white/50">Historical Revenue &amp; Net Income</span>
+          <span className="text-xs text-white/50 block mt-0.5">Historical Revenue &amp; Net Income</span>
         </div>
-        <div className="flex gap-4 text-[10px] uppercase tracking-[0.15em]">
+        <div className="flex gap-4 text-[10px] uppercase tracking-[0.15em] shrink-0">
           <div className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-[#FF7A3D]" />
             <span className="text-white/60">Revenue</span>
