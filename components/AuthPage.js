@@ -58,7 +58,7 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ credential: response.credential })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({ error: "Google verification route error. Make sure your dev server is restarted." }));
       if (!res.ok) throw new Error(data.error || "Google sign-in failed");
 
       onAuthSuccess(data.token, data.user);
@@ -81,7 +81,7 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({ error: "Signup endpoint error. Make sure you restart your Next.js dev server to load the new .env settings!" }));
       if (!res.ok) throw new Error(data.error || "Registration failed");
 
       setSuccessMsg("Account pre-created. Please verify your OTP code.");
@@ -105,7 +105,7 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code: otpCode })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({ error: "Verification endpoint error. Try again." }));
       if (!res.ok) throw new Error(data.error || "OTP verification failed");
 
       onAuthSuccess(data.token, data.user);
@@ -128,7 +128,7 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({ error: "Login endpoint error. Check your database connection parameters." }));
 
       if (res.status === 202 && data.needsVerification) {
         setSuccessMsg(data.message);
@@ -158,7 +158,7 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({ error: "Forgot password endpoint error. Check your SMTP setup." }));
       if (!res.ok) throw new Error(data.error || "Failed sending reset code");
 
       setSuccessMsg("Reset code has been sent.");
@@ -182,7 +182,7 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code: otpCode, newPassword })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({ error: "Reset password endpoint error." }));
       if (!res.ok) throw new Error(data.error || "Password reset failed");
 
       setSuccessMsg(data.message);

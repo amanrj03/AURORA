@@ -3,7 +3,7 @@ import { Search, Compass } from "lucide-react";
 import DynamicParticleSphere from "./DynamicParticleSphere";
 import PremiumLogo from "./PremiumLogo";
 
-export default function LandingPage({ onLaunch, onDirectSearch }) {
+export default function LandingPage({ onLaunch, onDirectSearch, isLoggedIn }) {
   const [query, setQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
 
@@ -41,13 +41,32 @@ export default function LandingPage({ onLaunch, onDirectSearch }) {
             <a href="#technology" className="hover:text-white transition">Technology</a>
           </div>
 
-          <button
-            onClick={onLaunch}
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/15 px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-semibold text-white/90 transition hover:border-[#FF4B2B] hover:text-white"
-          >
-            Launch Console
-            <span className="absolute inset-0 bg-[#FF4B2B]/10 opacity-0 group-hover:opacity-100 transition" />
-          </button>
+          <div className="flex items-center gap-4">
+            {!isLoggedIn ? (
+              <>
+                <button
+                  onClick={onLaunch}
+                  className="text-xs uppercase tracking-widest text-[#98A2B3] hover:text-white font-semibold transition px-4 py-2"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={onLaunch}
+                  className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/15 px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-semibold text-white/90 transition hover:border-[#FF4B2B] hover:text-white"
+                >
+                  Launch Console
+                  <span className="absolute inset-0 bg-[#FF4B2B]/10 opacity-0 group-hover:opacity-100 transition" />
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={onLaunch}
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-[#FF4B2B] px-6 py-2.5 text-[10px] uppercase tracking-[0.2em] font-semibold text-white transition hover:bg-[#FF4B2B]/90"
+              >
+                Go to Console
+              </button>
+            )}
+          </div>
         </div>
       </nav>
 

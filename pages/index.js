@@ -102,6 +102,7 @@ export default function Home() {
         <LandingPage 
           onLaunch={handleLaunch} 
           onDirectSearch={handleDirectSearch}
+          isLoggedIn={!!token}
         />
       )}
     </>
