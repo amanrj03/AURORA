@@ -99,6 +99,7 @@ export default async function handler(req, res) {
         totalRevenue: financialData.totalRevenueFmt
       },
       recommendationTrend: financialData.recommendations,
+      earningsHistory: financialData.earningsHistory || [],
       decision: analysis.decision,
       confidence: analysis.confidence,
       summary: analysis.summary,
