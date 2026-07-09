@@ -85,31 +85,33 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
     setLogs((l) => [...l, `[${new Date().toLocaleTimeString()}] ${m}`]);
 
   useEffect(() => {
-    const historyKey = `invest_history_${user?.id || 'guest'}`;
-    const savedHistory = localStorage.getItem(historyKey);
     const savedRisk = localStorage.getItem('invest_risk');
-    if (savedHistory) {
-      try {
-        const parsed = JSON.parse(savedHistory);
-        if (Array.isArray(parsed)) {
-          const validHistory = parsed.filter(item => item && item.result && item.result.ticker);
-          setHistory(validHistory);
-        }
-      } catch (e) {
-        console.error('Error parsing history', e);
-      }
-    } else {
-      setHistory([]); // Clear history for users with no records
-    }
     if (savedRisk) {
       setRiskTolerance(savedRisk);
     }
+
+    const loadDbHistory = async () => {
+      if (!token) return;
+      try {
+        const res = await fetch("/api/auth/history", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setHistory(data);
+        }
+      } catch (e) {
+        console.error("Failed loading database history:", e);
+      }
+    };
+
+    loadDbHistory();
 
     if (initialQuery) {
       setCompany(initialQuery);
       analyze(initialQuery);
     }
-  }, [initialQuery, user]);
+  }, [initialQuery, user, token]);
 
   const changeRiskTolerance = (r) => {
     setRiskTolerance(r);
@@ -161,20 +163,29 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
         }
       }
 
-      const newItem = {
-        id: Date.now().toString(),
-        company: searchVal,
-        risk: riskTolerance,
-        at: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        result: data,
-      };
-      const historyKey = `invest_history_${user?.id || 'guest'}`;
-      setHistory((h) => {
-        const filtered = h.filter((item) => item?.result?.ticker !== data.ticker);
-        const updated = [newItem, ...filtered].slice(0, 10);
-        localStorage.setItem(historyKey, JSON.stringify(updated));
-        return updated;
-      });
+      if (token) {
+        const newItem = {
+          company: searchVal,
+          risk: riskTolerance,
+          result: data
+        };
+        fetch("/api/auth/history", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(newItem)
+        }).then(async (res) => {
+          if (res.ok) {
+            const savedLog = await res.json();
+            setHistory((h) => {
+              const filtered = h.filter((item) => item.company !== searchVal);
+              return [savedLog, ...filtered].slice(0, 10);
+            });
+          }
+        }).catch(err => console.error("Error saving history:", err));
+      }
     } catch (e) {
       clearInterval(stepTimer);
       const msg = e instanceof Error ? e.message : "Unknown error";
@@ -192,11 +203,21 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
     setError(null);
   };
 
-  const clearHistory = () => {
-    const historyKey = `invest_history_${user?.id || 'guest'}`;
+  const clearHistory = async () => {
+    if (!token) return;
     setHistory([]);
-    localStorage.removeItem(historyKey);
-    pushLog("✓ History cleared");
+    try {
+      const res = await fetch("/api/auth/history", {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        pushLog("✓ History cleared in database");
+      }
+    } catch (e) {
+      console.error("Failed clearing history:", e);
+      pushLog("✗ Failed clearing history in database");
+    }
   };
 
   const pros = result?.positives || result?.pros || [];
@@ -290,7 +311,11 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
                           {item.risk}
                         </span>
                       </div>
-                      <div className="mt-1 text-[9px] text-[#98A2B3]/60">{item.at}</div>
+                      <div className="mt-1 text-[9px] text-[#98A2B3]/60">
+                        {item.createdAt 
+                          ? new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+                          : item.at}
+                      </div>
                     </li>
                   ))}
                 </ul>
