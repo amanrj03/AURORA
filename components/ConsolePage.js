@@ -81,6 +81,13 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
   const [userNotes, setUserNotes] = useState("");
   const [profileOpen, setProfileOpen] = useState(false);
 
+  // Autocomplete suggestions states
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [hasSelected, setHasSelected] = useState(false);
+  const [validationWarning, setValidationWarning] = useState(null);
+
   const pushLog = (m) =>
     setLogs((l) => [...l, `[${new Date().toLocaleTimeString()}] ${m}`]);
 
@@ -112,6 +119,66 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
       analyze(initialQuery);
     }
   }, [initialQuery, user, token]);
+
+  // Debounced search suggestions effect
+  useEffect(() => {
+    if (hasSelected || !company.trim()) {
+      setSuggestions([]);
+      setShowDropdown(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setSuggestionsLoading(true);
+      try {
+        const res = await fetch(`/api/search-suggestions?q=${encodeURIComponent(company)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSuggestions(data);
+          setShowDropdown(data.length > 0);
+        }
+      } catch (err) {
+        console.error("Failed fetching suggestions:", err);
+      } finally {
+        setSuggestionsLoading(false);
+      }
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [company, hasSelected]);
+
+  // Outside click detector to close search suggestions dropdown
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      const container = document.getElementById("search-input-container");
+      if (container && !container.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
+
+  const handleInputChange = (val) => {
+    setCompany(val);
+    setHasSelected(false);
+    setValidationWarning(null);
+  };
+
+  const handleSelectSuggestion = (item) => {
+    setHasSelected(true);
+    setValidationWarning(null);
+    setCompany(`${item.name} (${item.symbol})`);
+    setSuggestions([]);
+    setShowDropdown(false);
+    analyze(item.symbol);
+  };
+
+  const handleSearchClick = (e) => {
+    if (e) e.preventDefault();
+    setValidationWarning("Please select a company from the suggestions list below to run the audit.");
+    setShowDropdown(suggestions.length > 0);
+  };
 
   const changeRiskTolerance = (r) => {
     setRiskTolerance(r);
@@ -328,25 +395,60 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
             
             <div className="rounded-xl border border-white/5 bg-[#11161D] p-6 shadow-xl">
               <h3 className="text-[10px] uppercase tracking-[0.25em] text-[#98A2B3]">Target Query</h3>
-              <div className="mt-3 flex gap-3">
-                <div className="relative flex-1 flex items-center p-1 rounded-xl border border-white/10 bg-[#050608]/50 focus-within:border-[#FF4B2B] transition duration-200">
-                  <Search className="h-4.5 w-4.5 text-white/30 ml-3.5" />
-                  <input
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && analyze()}
-                    placeholder="Analyze company ticker (e.g. Tesla, AAPL, INSID)"
-                    className="flex-1 bg-transparent px-3 py-2.5 text-sm text-white outline-none placeholder:text-white/20"
-                  />
+              <div className="mt-3 flex gap-3 items-start">
+                <div id="search-input-container" className="relative flex-1 flex flex-col">
+                  <div className="relative flex items-center p-1 rounded-xl border border-white/10 bg-[#050608]/50 focus-within:border-[#FF4B2B] transition duration-200">
+                    <Search className="h-4.5 w-4.5 text-white/30 ml-3.5" />
+                    <input
+                      value={company}
+                      onChange={(e) => handleInputChange(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleSearchClick(e)}
+                      onFocus={() => setShowDropdown(suggestions.length > 0)}
+                      placeholder="Search company (e.g. Apple, Tesla, Google)"
+                      className="flex-1 bg-transparent px-3 py-2.5 text-sm text-white outline-none placeholder:text-white/20"
+                    />
+                  </div>
+
+                  {/* Suggestions Dropdown */}
+                  {showDropdown && suggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 z-50 mt-1.5 rounded-xl border border-white/5 bg-[#11161D] p-1.5 shadow-2xl space-y-0.5 max-h-60 overflow-y-auto">
+                      {suggestions.map((item) => (
+                        <button
+                          key={item.symbol}
+                          onClick={() => handleSelectSuggestion(item)}
+                          className="w-full flex items-center justify-between rounded-lg px-3 py-2 text-left hover:bg-white/[0.03] transition group"
+                        >
+                          <div className="flex flex-col">
+                            <span className="text-xs font-semibold text-white group-hover:text-[#FF7A3D] transition">
+                              {item.name}
+                            </span>
+                            <span className="text-[10px] text-[#98A2B3]/50">
+                              {item.exchange} • {item.type}
+                            </span>
+                          </div>
+                          <span className="rounded bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-bold text-white group-hover:bg-[#FF4B2B]/10 group-hover:text-[#FF4B2B] transition">
+                            {item.symbol}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
+
                 <button
-                  onClick={() => analyze()}
+                  onClick={handleSearchClick}
                   disabled={loading || !company.trim()}
-                  className="rounded-xl bg-[#FF4B2B] px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white disabled:opacity-40 hover:bg-[#FF4B2B]/90 transition"
+                  className="rounded-xl bg-[#FF4B2B] px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-white disabled:opacity-40 hover:bg-[#FF4B2B]/90 transition"
                 >
                   {loading ? "Auditing…" : "Run Audit"}
                 </button>
               </div>
+
+              {validationWarning && (
+                <div className="mt-2 text-xs text-amber-500/90 font-medium">
+                  ⚠️ {validationWarning}
+                </div>
+              )}
 
               <div className="mt-5 flex items-center justify-between border-t border-white/5 pt-4">
                 <span className="text-[10px] uppercase tracking-[0.25em] text-[#98A2B3]">Auditor Risk Constraint</span>
