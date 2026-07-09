@@ -319,10 +319,10 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
 
             <button
               onClick={onBack}
-              className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-4.5 py-2 text-[10px] uppercase tracking-[0.25em] text-[#98A2B3] transition hover:border-[#FF4B2B] hover:text-white"
+              className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] pl-3.5 pr-4.5 py-2 text-[10px] uppercase text-[#98A2B3] transition hover:border-[#FF4B2B] hover:text-white"
             >
-              <LogOut className="h-3 w-3" />
-              Exit Workspace
+              <LogOut className="h-3.5 w-3.5" />
+              <span className="tracking-[0.2em]">Exit Workspace</span>
             </button>
           </div>
         </div>
