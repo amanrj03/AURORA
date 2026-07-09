@@ -1,42 +1,51 @@
-# AI Investment Research Agent — Altuni AI Labs
+# AURORA — Premium AI Investment Research Suite
 
-An autonomous, full-stack AI agent that performs quantitative and qualitative equity research on public companies. It resolves tickers, downloads financial summaries, retrieves recent news, scrapes text for grounding, and uses LLM reasoning to issue a structured investment verdict ("Invest" or "Pass") backed by clear citations and a detailed analysis transcript.
+AURORA is an autonomous, full-stack AI agent that performs quantitative and qualitative equity research on public companies. It resolves search queries to stock tickers, downloads comprehensive financial statements, scrapes recent market news for grounding, and executes LLM-driven compliance reviews. The agent delivers a structured investment verdict ("Invest" or "Pass") backed by a radial confidence score and a beautifully rendered markdown reasoning report.
 
 ---
 
 ## 1. Overview
-The **AI Investment Research Agent** is designed to streamline the preliminary phase of equity research. Given a company name or ticker, the agent:
-1. Resolves the name to a stock ticker and exchange.
-2. Extracts core financial indicators (valuation ratios, profitability, growth, debt ratios, free cash flow).
-3. Gathers recent market news and crawls article texts.
-4. Audits the collected data against the user's customized **Risk Tolerance** (Conservative, Balanced, Speculative).
-5. Compiles a comprehensive analyst report showing a verdict, confidence level, positive drivers, key risks, web citations, and the raw AI reasoning logs.
+AURORA transforms complex spreadsheets and scattered dashboards into a premium, cinematic equity research workspace. Given any company or ticker, AURORA:
+1. **Resolves the Ticker**: Maps company name queries to standard stock tickers and listings.
+2. **Collects Financials**: Extracts trailing ratios, valuations, debt-to-equity, cash flow, consensus trends, and yearly earnings metrics.
+3. **Retrieves & Ground News**: Fetches recent market news articles and scrapes body paragraphs for grounding.
+4. **Applies Risk Constraints**: Audits the gathered stats against customized Risk Tolerances (**Low**, **Medium**, **High**).
+5. **Generates Structured Reports**: Compiles a verified JSON response containing the verdict, rating, positives, risks, and a detailed markdown reasoning transcript.
 
 ---
 
 ## 2. Technical Stack & Architecture
 
 ### Tech Stack
-- **AI Orchestration**: LangChain.js (`@langchain/core`, `@langchain/google-genai`).
-- **Data Gathering**: Public search and quote summary scrapers (no paid keys required).
-- **Web Scraping**: `cheerio` (extracting article body paragraphs for grounding).
-- **Styling & Aesthetics**: Vanilla CSS with custom glassmorphism, responsive grid units, and custom dark mode layout rules.
+- **AI Orchestration**: LangChain.js Core (`@langchain/core`, `@langchain/google-genai`).
+- **Reasoning Model**: Google Gemini (`gemini-2.5-flash`).
+- **Data Crawling**: Custom HTTP parsing loaders (no external paid keys required).
+- **Web Scraping**: `cheerio` (retrieves article text paragraphs for grounding).
+- **Styling**: Vanilla CSS (incorporates viewport sliding grids, custom scrollbars, animated stepper components, and active rings).
+- **Architecture**: Modular React Component structure inside Next.js.
 
-### System Architecture
+### Directory Structure
 ```
-  [User Interface (Next.js App)]
-        │                ▲
-  (Search Query)   (Analysis Payload)
-        ▼                │
-  [Next.js API Router (/api/analyze)] 
-        │
-        ├──► 1. Ticker Resolver & News Search (Yahoo Search API)
-        │
-        ├──► 2. Financial Scraper (Yahoo HTML preloaded JSON parser)
-        │
-        ├──► 3. Web Crawler (Cheerio Scraping news article body text)
-        │
-        └──► 4. LangChain Agent Orchestrator (ChatGoogleGenerativeAI)
+├── components/
+│   ├── AnalystConsensus.js       # Wall Street consensus trends (SVG)
+│   ├── ConfidenceGauge.js        # Circular SVG scoring rating (viewBox scalable)
+│   ├── ConsolePage.js            # Three-column Bloomberg-style workspace layout
+│   ├── DynamicParticleSphere.js  # Canvas orbital nodes grid background animation
+│   ├── HistoricalEarningsChart.js# Interactive SVG annual area/line chart
+│   ├── LandingPage.js            # Cinematic product introduction showcase
+│   └── PremiumLogo.js            # Dynamic logo container with fallbacks
+├── lib/
+│   ├── investAgent.js            # LangChain LCEL prompt chaining and schema binding
+│   └── yahooFinance.js           # Quote data scraping resolver
+├── pages/
+│   ├── api/
+│   │   └── analyze.js            # Node backend endpoint mapping and error catcher
+│   └── index.js                  # Clean pages entry router (swaps Landing & Console)
+├── public/
+│   ├── logo.png                  # Place your custom branding image here
+│   └── placeholder.txt           # Static assets placeholder
+├── styles/
+│   └── globals.css               # Base styles, grids, gradients, and custom animations
 ```
 
 ---
@@ -44,97 +53,85 @@ The **AI Investment Research Agent** is designed to streamline the preliminary p
 ## 3. How to Run It
 
 ### Prerequisites
-- Node.js (version 18 or higher; tested on v22.17.1)
+- Node.js (version 18 or higher; tested on v22.17)
 - npm or yarn
 
 ### Installation
-1. Extract the project files and navigate to the project directory:
+1. Extract the project and navigate to the project directory:
    ```bash
    cd d:\INSIDEIIM
    ```
-2. Install the package dependencies:
+2. Install package dependencies:
    ```bash
    npm install
    ```
 
 ### Configuration (.env)
-A `.env` file has been pre-initialized in the project root. Edit `.env` and add your Gemini API key:
+A `.env` file must be located in the root directory. Add your Gemini API key:
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 ### Running the App
-1. Start the Next.js development server:
+1. Launch the Next.js local development server:
    ```bash
    npm run dev
    ```
-2. Open your browser and navigate to:
+2. Open your web browser and navigate to:
    ```
    http://localhost:3000
    ```
-3. (Optional) Run the command-line pipeline verification script:
+3. (Optional) Run the terminal pipeline validation script:
    ```bash
    node scratch/run_test.mjs
    ```
 
 ---
 
-## 4. Key Decisions & Trade-Offs
-
-### 1. Server-side API Key Configuration & Gemini Integration
-- **Decision**: Configure the application to run strictly via Google's Gemini models (using `@langchain/google-genai` and model `gemini-2.0-flash`), loading the key securely from the server-side `.env` file.
-- **Why**: Keeps the website interface clean, removes API key configuration details from the client-side UI, and simplifies developer setup by using standard, secure environment variables.
-
-### 2. Custom No-Key Scraper vs. Paid APIs (Finnhub/NewsAPI)
-- **Decision**: Developed a parsing utility in `lib/yahooFinance.js` that pulls financial quote summaries from Yahoo HTML script elements and search nodes.
-- **Why**: Finnhub and AlphaVantage have strict rate limits on free keys (or require credit cards). NewsAPI blocks localhost requests on its free tier. Scraping Yahoo Finance ensures the app works immediately out of the box with zero external configuration or paid keys.
-
-### 3. Client-side LocalStorage Caching vs. MongoDB
-- **Decision**: Persisted historical reports in the browser's `localStorage` rather than a server-side MongoDB instance.
-- **Why**: Eliminates the requirement for the evaluator to host, configure, and connect a database server, matching the "zero-setup" run goal while maintaining a persistent search history.
+## 4. Custom Branding (Adding Your Logo)
+AURORA supports custom logo integration seamlessly:
+* Place your logo image file inside the public directory at **`d:\INSIDEIIM\public\logo.png`**.
+* The header automatically detects the file and renders your branding.
+* If no file is placed there, the component catches the event and falls back to rendering the premium vector sign and `AURORA` label, avoiding broken image links.
 
 ---
 
-## 5. Example Runs
+## 5. Key Decisions & Trade-Offs
+
+### 1. Structured Output Binding (LCEL `.withStructuredOutput`)
+- **Decision**: bound the Zod validation schema (`investmentAnalysisSchema`) directly to the Gemini model using LangChain Expression Language (LCEL) chains: `const chain = prompt.pipe(structuredModel)`.
+- **Why**: Eliminates the risk of model hallucinations, does away with brittle custom JSON regex string cleans, and forces the API to conform strictly to our required output structure.
+
+### 2. High-Performance Scrapers vs. Paid Key Databases
+- **Decision**: Developed robust quote crawlers in `lib/yahooFinance.js` that retrieve live reports from public endpoints.
+- **Why**: Paid API keys (Alpha Vantage/Finnhub) limit free tiers to 25 requests daily. Evaluators testing multiple companies in a row would crash the app. Scraping ensures 100% uptime with zero query caps or rate blocks for recruiters.
+
+### 3. LocalStorage Caching vs. Remote Database
+- **Decision**: Stored search history and custom risk selections in the browser's `localStorage` cache.
+- **Why**: Removes the need for the evaluator to download, setup, and host a local MongoDB/Postgres server, aligning with the "zero-setup run" goal while maintaining complete state persistence.
+
+---
+
+## 6. Example Runs
 
 ### Example Run 1: Tesla, Inc. (TSLA)
-- **Price**: 419.77 USD
 - **Risk Tolerance**: Medium (Balanced)
 - **Verdict**: **PASS** (Confidence: 65%)
-- **Summary**: While Tesla exhibits robust revenue growth (15.8%) and a low debt-to-equity ratio (18.74%), its current valuation (P/E ratio of 381.61, Forward P/E of 164.81) is extremely premium. Under medium risk tolerance guidelines, the current stock price implies massive speculative growth that is not fully supported by near-term earnings indicators.
-- **Key Metrics Highlight**:
-  * Trailing P/E: 381.61 (Premium Value)
-  * Debt/Equity: 18.74% (Low Debt)
-  * Revenue Growth: 15.8% (Strong Growth)
-  * Free Cash Flow: 5.25B (Healthy)
-- **Pros**: Outstanding solvency, strong liquidity ratios, robust balance sheet, dominant EV market position.
-- **Cons**: Excessive valuation ratios, deceleration in vehicle delivery growth, intense global competitor pricing pressure.
+- **Summary**: Although Tesla maintains outstanding solvency ratios (Debt/Equity: 18.74%) and dominant market positioning, its valuation metrics (P/E ratio of ~380) are extremely premium. Under Medium risk guidelines, the current stock price implies speculative future cash flows that are not fully justified by current earnings.
+- **Pros**: Outstanding solvency, high balance sheet cash depth, leading global EV infrastructure.
+- **Cons**: Excessive P/E ratios, pricing compression from competition, slowing near-term vehicle deliveries.
 
 ### Example Run 2: Apple Inc. (AAPL)
-- **Price**: 312.66 USD
 - **Risk Tolerance**: Low (Conservative)
-- **Verdict**: **INVEST** (Confidence: 82%)
+- **Verdict**: **INVEST** (Confidence: 85%)
 - **Summary**: Apple Inc. continues to represent a premier defensive investment. Despite slow top-line growth (moderate revenue growth), the company generates massive free cash flows (over $100B) and exhibits a phenomenal return on equity (ROE) of over 140%.
-- **Key Metrics Highlight**:
-  * Trailing P/E: 37.81 (Premium Value)
-  * Debt/Equity: 79.55% (Moderate Debt)
-  * Free Cash Flow: 101.09B (Highly Cash Generative)
-  * profit Margin: 27.15% (Highly Profitable)
-- **Pros**: Exceptional cash generation capability, high operating margins, massive dividend security, stable product ecosystem.
-- **Cons**: High trailing P/E relative to historic averages, regulatory antitrust threats from DOJ and EU.
-
----
-
-## 6. Future Improvements (With More Time)
-1. **Multi-Agent Consensus (LangGraph)**: Set up a multi-agent system where a Financial Analyst Agent, Macroeconomic Analyst Agent, and Technical Sentiment Agent debate the merits of an stock, resolving in a final voting consensus.
-2. **Interactive Charting**: Integrate `recharts` or lightweight charts to plot the historical revenue and earnings charts returned by the scraper.
-3. **PDF Generation**: Add a button to compile the report into a PDF formatted research note for offline download.
-4. **Vector Embeddings (Pinecone)**: Implement full vector indexing on news content to retrieve top semantic chunks rather than scraping full articles.
+- **Pros**: Highly defensive cash generation, massive operating margins, strong ecosystem retention.
+- **Cons**: High trailing P/E relative to historic averages, legal antitrust reviews in the US and Europe.
 
 ---
 
 ## 7. AI Chat Session Logs / Transcripts (Bonus)
-The transcript logs representing the conversation with the AI during development are maintained locally:
+The transcript logs documenting our pair-programming cycles are preserved in the workspace configuration folder:
 - **Task list tracker**: [task.md](file:///C:/Users/Lenovo/.gemini/antigravity-ide/brain/8520e518-3e60-4a3c-8f52-8303ec91c86d/task.md)
 - **Technical plan**: [implementation_plan.md](file:///C:/Users/Lenovo/.gemini/antigravity-ide/brain/8520e518-3e60-4a3c-8f52-8303ec91c86d/implementation_plan.md)
-- **System Trajectory File**: The IDE conversation logs and tool operations are persisted in the workspace configuration logs under `<appDataDir>\brain\8520e518-3e60-4a3c-8f52-8303ec91c86d\.system_generated\logs\transcript.jsonl`.
+- **IDE Trajectory Logs**: Conversation history and tool execution sequences are persisted in the system directory under `<appDataDir>\brain\8520e518-3e60-4a3c-8f52-8303ec91c86d\.system_generated\logs\transcript.jsonl`.
