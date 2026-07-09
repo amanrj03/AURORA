@@ -35,3 +35,5 @@ yarn-error.log*
 # submission archives
 *.zip
 *.rar
+
+/lib/generated/prisma

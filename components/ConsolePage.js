@@ -5,12 +5,14 @@ import {
   Plus, 
   ExternalLink, 
   LogOut,
-  Notebook
+  Notebook,
+  User
 } from "lucide-react";
 import PremiumLogo from "./PremiumLogo";
 import HistoricalEarningsChart from "./HistoricalEarningsChart";
 import ConfidenceGauge from "./ConfidenceGauge";
 import AnalystConsensus from "./AnalystConsensus";
+import ProfileModal from "./ProfileModal";
 
 const STEPS = [
   "Resolving ticker",
@@ -67,7 +69,7 @@ const renderMarkdown = (md) => {
   );
 };
 
-export default function ConsolePage({ onBack, initialQuery = "" }) {
+export default function ConsolePage({ onBack, initialQuery = "", user, token, onUpdateUser, onLogout }) {
   const [company, setCompany] = useState(initialQuery);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -77,6 +79,7 @@ export default function ConsolePage({ onBack, initialQuery = "" }) {
   const [history, setHistory] = useState([]);
   const [logs, setLogs] = useState([]);
   const [userNotes, setUserNotes] = useState("");
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const pushLog = (m) =>
     setLogs((l) => [...l, `[${new Date().toLocaleTimeString()}] ${m}`]);
@@ -208,13 +211,27 @@ export default function ConsolePage({ onBack, initialQuery = "" }) {
             <span className="hidden md:inline text-xs text-[#98A2B3]">Research Suite</span>
           </div>
 
-          <button
-            onClick={onBack}
-            className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-4.5 py-2 text-[10px] uppercase tracking-[0.25em] text-[#98A2B3] transition hover:border-[#FF4B2B] hover:text-white"
-          >
-            <LogOut className="h-3 w-3" />
-            Exit Workspace
-          </button>
+          <div className="flex items-center gap-4">
+            {user && (
+              <button
+                onClick={() => setProfileOpen(true)}
+                className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-3.5 py-1.5 text-[10px] uppercase font-semibold text-white transition hover:border-[#FF7A3D]"
+              >
+                <div className="h-4.5 w-4.5 rounded-full bg-gradient-to-br from-[#FF4B2B] to-[#FF7A3D] flex items-center justify-center text-[8px] font-bold text-white uppercase">
+                  {user.name ? user.name[0] : "U"}
+                </div>
+                <span className="hidden sm:inline font-semibold">{user.name || "Profile"}</span>
+              </button>
+            )}
+
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-4.5 py-2 text-[10px] uppercase tracking-[0.25em] text-[#98A2B3] transition hover:border-[#FF4B2B] hover:text-white"
+            >
+              <LogOut className="h-3 w-3" />
+              Exit Workspace
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -512,6 +529,14 @@ export default function ConsolePage({ onBack, initialQuery = "" }) {
 
         </div>
       </div>
+      <ProfileModal
+        isOpen={profileOpen}
+        onClose={() => setProfileOpen(false)}
+        user={user}
+        token={token}
+        onUpdateUser={onUpdateUser}
+        onLogout={onLogout}
+      />
     </div>
   );
 }
