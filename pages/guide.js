@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Search, ListFilter, Play, ShieldAlert, TrendingUp, HelpCircle, History, ArrowLeft, ExternalLink } from "lucide-react";
+import { Search, ListFilter, Play, ShieldAlert, TrendingUp, HelpCircle, History, ArrowLeft, ExternalLink, LayoutGrid } from "lucide-react";
 import PremiumLogo from "../components/PremiumLogo";
 
 export default function UserGuide() {
@@ -40,8 +40,15 @@ export default function UserGuide() {
       details: "If Yahoo Finance is rate-limited or blocks international tickers, our system gracefully switches to mock fallback metrics to keep dashboards operational.",
     },
     {
+      id: "metrics",
+      title: "6. Audited Financial Indicators",
+      icon: <LayoutGrid className="h-5 w-5 text-[#FF7A3D]" />,
+      desc: "Examine the 9-indicator metrics grid. Displays critical key statistics like current P/E ratio, forward P/E, PEG, Price-to-Book, profitability ratios, margins, current liquid ratios, and total leverage.",
+      details: "Ratios are extracted dynamically from public filing statements and mapped into visual blocks to allow instant comparison and screening.",
+    },
+    {
       id: "history",
-      title: "6. Manage Query History",
+      title: "7. Manage Query History",
       icon: <History className="h-5 w-5 text-[#FF7A3D]" />,
       desc: "Re-hydrate previous audits instantly. The left sidebar stores past query logs. You can sync history profiles to the cloud database or clear them with a single click.",
       details: "When users log in from another device, their historical audits sync automatically from the PostgreSQL database, preserving their records.",
