@@ -92,26 +92,25 @@ export default function LandingPage({ onLaunch, onDirectSearch, isLoggedIn }) {
               Designed for modern institutional auditors and analysts.
             </p>
 
-            {/* Living Search Field */}
-            <form onSubmit={handleSearchSubmit} className="max-w-lg">
-              <div className="relative group flex items-center p-1.5 rounded-xl border border-white/10 bg-black/40 backdrop-blur-md transition-all duration-300 focus-within:border-[#FF4B2B] focus-within:ring-2 focus-within:ring-[#FF4B2B]/20">
-                <Search className="h-5 w-5 text-white/40 ml-4" />
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search any company or ticker..."
-                  className="flex-1 bg-transparent px-4 py-3 text-sm text-white outline-none placeholder:text-white/30"
-                />
-                <button
-                  type="submit"
-                  className="relative group overflow-hidden rounded-lg bg-[#FF4B2B] px-6 py-3 text-xs font-semibold uppercase tracking-wider text-white shadow-lg transition-transform hover:-translate-y-0.5"
-                >
-                  <span className="relative z-10">Launch →</span>
-                  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition" />
-                </button>
-              </div>
-            </form>
+            {/* Action CTAs */}
+            <div className="flex flex-wrap gap-4 max-w-lg">
+              <button
+                onClick={onLaunch}
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-[#FF4B2B] px-8 py-3.5 text-xs font-semibold uppercase tracking-wider text-white shadow-2xl transition hover:-translate-y-0.5"
+              >
+                <span>Launch Research Console</span>
+                <span className="text-sm">→</span>
+                <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition" />
+              </button>
+              
+              <a
+                href="/guide"
+                className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full border border-white/10 bg-white/[0.02] px-8 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#98A2B3] transition hover:border-[#FF4B2B] hover:text-white hover:-translate-y-0.5"
+              >
+                <span>Explore User Guide</span>
+                <span className="absolute inset-0 bg-[#FF4B2B]/5 opacity-0 group-hover:opacity-100 transition" />
+              </a>
+            </div>
 
             {/* Checklist */}
             <div className="grid grid-cols-2 gap-y-3.5 max-w-lg text-[10px] uppercase tracking-[0.18em] text-[#98A2B3]">
