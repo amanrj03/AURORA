@@ -118,6 +118,19 @@ export default function UserGuide() {
                   <h3 className="text-base font-bold text-white uppercase tracking-wider">{s.title}</h3>
                 </div>
                 <p className="text-sm text-[#98A2B3] leading-relaxed">{s.desc}</p>
+                <div className="mt-3 overflow-hidden rounded-xl border border-white/5 bg-[#050608]/30 max-w-2xl" style={{ display: 'none' }}>
+                  <img
+                    src={`/screenshots/guide_${s.id}.png`}
+                    alt={s.title}
+                    className="w-full h-auto object-cover opacity-95 hover:opacity-100 transition"
+                    onLoad={(e) => {
+                      e.target.parentElement.style.display = 'block';
+                    }}
+                    onError={(e) => {
+                      e.target.parentElement.style.display = 'none';
+                    }}
+                  />
+                </div>
                 <div className="rounded-lg bg-[#050608]/40 border border-white/5 p-3.5 text-xs text-[#98A2B3]/80 leading-relaxed font-mono">
                   <span className="text-[#FF7A3D] font-bold">ℹ Pro Tip: </span>
                   {s.details}
