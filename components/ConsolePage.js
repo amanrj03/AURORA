@@ -302,6 +302,8 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
             <PremiumLogo />
             <span className="hidden md:inline h-4 w-px bg-white/10" />
             <span className="hidden md:inline text-xs text-[#98A2B3]">Research Suite</span>
+            <span className="hidden md:inline h-4 w-px bg-white/10" />
+            <a href="/guide" className="text-xs text-[#FF7A3D] hover:underline font-semibold transition">User Guide</a>
           </div>
 
           <div className="flex items-center gap-4">

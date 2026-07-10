@@ -39,6 +39,7 @@ export default function LandingPage({ onLaunch, onDirectSearch, isLoggedIn }) {
             <a href="#experience" className="hover:text-white transition">Experience</a>
             <a href="#preview" className="hover:text-white transition">Preview</a>
             <a href="#technology" className="hover:text-white transition">Technology</a>
+            <a href="/guide" className="text-[#FF7A3D] font-semibold hover:text-[#FF7A3D]/85 transition">User Guide</a>
           </div>
 
           <div className="flex items-center gap-4">
