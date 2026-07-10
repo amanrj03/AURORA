@@ -129,22 +129,43 @@ A scrollable card that prints a clean, markdown-rendered transcript of the agent
 - npm or yarn
 
 ### Installation
-1. Extract the project and navigate to the project directory:
+1. Clone the repository and navigate into the directory:
    ```bash
-   cd d:\INSIDEIIM
+   git clone https://github.com/amanrj03/AURORA.git
+   cd AURORA
    ```
-2. Install package dependencies:
+2. Install the package dependencies:
    ```bash
    npm install
    ```
 
 ### Configuration (.env)
-Create a `.env` file in the root folder containing:
+Create a `.env` file in the root of the project directory and configure the following parameters:
 ```env
-DATABASE_URL="your-postgresql-neon-database-url"
-JWT_SECRET="your-jwt-auth-session-key"
-GEMINI_API_KEY="your-google-gemini-api-key"
-NEXT_PUBLIC_GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"
+# Database Connection (PostgreSQL connection string, e.g. Neon DB)
+DATABASE_URL="postgresql://user:password@host/dbname?sslmode=require"
+
+# Session Security Token (Used to sign JWT authorization tokens)
+JWT_SECRET="your-jwt-auth-session-key-any-random-string"
+
+# Google Gemini API Key (Required for stock research prompts)
+GEMINI_API_KEY="AIzaSy..."
+
+# Google SSO Client ID (Required to activate Google One-Tap/Sign-In buttons)
+NEXT_PUBLIC_GOOGLE_CLIENT_ID="123456789-abc.apps.googleusercontent.com"
+
+# SMTP Mail Server Credentials (Required for sending OTP verification codes)
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT=587
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-gmail-app-password"
+SMTP_FROM="Aurora Workspace <your-email@gmail.com>"
+```
+
+### Database Synchronization
+Synchronize your local Prisma Client definitions and push the schema tables to your live PostgreSQL database:
+```bash
+npx prisma db push
 ```
 
 ### Running the App
@@ -152,11 +173,11 @@ NEXT_PUBLIC_GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"
    ```bash
    npm run dev
    ```
-2. Open your web browser and navigate to:
+2. Open your browser and navigate to:
    ```
    http://localhost:3000
    ```
-3. Run the terminal pipeline validation script:
+3. (Optional) Run the terminal pipeline validation script to verify scraper/agent bindings directly in your shell:
    ```bash
    node scratch/run_test.mjs
    ```
