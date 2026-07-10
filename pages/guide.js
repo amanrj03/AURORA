@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Search, ListFilter, Play, ShieldAlert, TrendingUp, HelpCircle, History, ArrowLeft, ExternalLink, LayoutGrid } from "lucide-react";
+import { Search, ListFilter, Play, ShieldAlert, TrendingUp, HelpCircle, History, ArrowLeft, ExternalLink, LayoutGrid, Info } from "lucide-react";
 import PremiumLogo from "../components/PremiumLogo";
 
 export default function UserGuide() {
@@ -76,10 +76,10 @@ export default function UserGuide() {
             </div>
             <a
               href="/"
-              className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-4.5 py-2 text-[10px] uppercase tracking-wider text-[#98A2B3] hover:text-white transition hover:border-[#FF4B2B]"
+              className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] pl-3.5 pr-5 py-2 text-[10px] uppercase text-[#98A2B3] transition hover:border-[#FF4B2B] hover:text-white"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
-              Return to Console
+              <span className="tracking-[0.15em]">Return to Console</span>
             </a>
           </div>
         </nav>
@@ -138,9 +138,12 @@ export default function UserGuide() {
                     }}
                   />
                 </div>
-                <div className="rounded-lg bg-[#050608]/40 border border-white/5 p-3.5 text-xs text-[#98A2B3]/80 leading-relaxed font-mono">
-                  <span className="text-[#FF7A3D] font-bold">ℹ Pro Tip: </span>
-                  {s.details}
+                <div className="rounded-lg bg-[#050608]/40 border border-white/5 p-3.5 text-xs text-[#98A2B3]/80 leading-relaxed font-mono flex items-start gap-2">
+                  <Info className="h-4 w-4 text-[#FF7A3D] shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-[#FF7A3D] font-bold">Pro Tip: </span>
+                    {s.details}
+                  </div>
                 </div>
               </div>
             ))}
