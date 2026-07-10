@@ -1,56 +1,128 @@
 # AURORA — Premium AI Investment Research Suite
 
-AURORA is an autonomous, full-stack AI agent that performs quantitative and qualitative equity research on public companies. It resolves search queries to stock tickers, downloads comprehensive financial statements, scrapes recent market news for grounding, and executes LLM-driven compliance reviews. The agent delivers a structured investment verdict ("Invest" or "Pass") backed by a radial confidence score and a beautifully rendered markdown reasoning report.
+AURORA is a cinematic, professional-grade AI investment research workspace that automates equity analysis on public stocks. Leveraging a multi-agent orchestration pipeline, AURORA resolves search queries to exact exchange listings, scrapes financial statement records, parses live market news for grounding, and audits company metrics against strict margin and solvency guidelines using generative AI. 
 
 ---
 
-## 1. Overview
-AURORA transforms complex spreadsheets and scattered dashboards into a premium, cinematic equity research workspace. Given any company or ticker, AURORA:
-1. **Resolves the Ticker**: Maps company name queries to standard stock tickers and listings.
-2. **Collects Financials**: Extracts trailing ratios, valuations, debt-to-equity, cash flow, consensus trends, and yearly earnings metrics.
-3. **Retrieves & Ground News**: Fetches recent market news articles and scrapes body paragraphs for grounding.
-4. **Applies Risk Constraints**: Audits the gathered stats against customized Risk Tolerances (**Low**, **Medium**, **High**).
-5. **Generates Structured Reports**: Compiles a verified JSON response containing the verdict, rating, positives, risks, and a detailed markdown reasoning transcript.
+## 1. Landing Page Showcase
+The welcoming product landing page showcases a premium, moving-grid design with orbital canvas particles that respond to the user's cursor.
+* **Launch Control**: Allows instant login/signup and redirects users to the secure research console.
+* **Instant Search**: Features an autocomplete search field that suggestions matches character-by-character.
+
+![AURORA Landing Page](/public/screenshots/landing_page.png)
 
 ---
 
-## 2. Technical Stack & Architecture
+## 2. How the Research Console Works
+The console workspace is structured as a three-column Bloomberg-style layout designed for clarity and analytical focus:
+1. **Left Sidebar (History & Audit Log)**: Tracks past query histories. Clicking any item instantly re-hydrates the dashboard with the saved analysis. Includes a database sync trigger and a "Clear History" button.
+2. **Center Pane (Research Board)**: The main command center housing the query input, live stepper, verdict panel, charts, and metrics.
+3. **Right Sidebar (Real-time Audit Log)**: Displays a running terminal log of the active research pipeline steps.
+
+![AURORA Research Console](/public/screenshots/research_dashboard.png)
+
+---
+
+## 3. Step-by-Step Audit Pipeline
+When you search a company or select a ticker from the autocomplete dropdown, AURORA starts a 5-step auditing sequence:
+1. **Resolving Ticker**: Searches the market for matching listings (e.g. mapping "Samsung" to `005930.KS`).
+2. **Fetching Financials**: Downloads the company profile, core stats (P/E ratio, PEG, profit margins), and historical statements.
+3. **Scraping Market News**: Collects the top 3 news articles and parses their body paragraphs using Cheerio for RAG grounding.
+4. **Gemini Analysis**: Feeds the grounded data into a custom prompt template evaluated by `gemini-2.5-flash` under Zod validation schemas.
+5. **Compiling Report**: Formats the final investment decision, confidence score, catalysts, and reasoning.
+
+---
+
+## 4. Dashboard Breakdown
+Once the analysis completes, the dashboard updates with the following visual panels:
+
+### 1. Compliance Decision & SVG Confidence Gauge
+* Displays the final rating verdict: **INVEST** (emerald theme) or **PASS** (amber/red theme).
+* Houses a custom circular **Confidence Gauge** rendering the AI's confidence percentage as a smooth, animated SVG arc.
+
+### 2. Company Information Card
+* Shows the listing name, ticker, and exchange (e.g. `005930.KS · Korea Exchange`).
+* Includes a clickable link to visit the corporate website alongside the business summary description.
+
+### 3. Financial Trajectory SVG Chart
+* A custom, responsive SVG line and filled-area graph charting the last 4 years of annual financial history.
+* Displays **Revenue** (orange line) and **Net Earnings** (red line) side-by-side. 
+* Uses flexbox wrap layouts to ensure labels and legends stack cleanly on narrow mobile devices.
+
+### 4. Wall Street Consensus Bar
+* A segmented horizontal progress bar aggregating professional recommendations.
+* Dynamically color-coded to visualize:
+  * **Buy (Green)**: Combination of Buy + Strong Buy ratings.
+  * **Hold (Gray)**: Neutral ratings.
+  * **Sell (Red)**: Combination of Sell + Strong Sell ratings.
+* Displays the exact count and percentage of analyst inputs covering the stock.
+
+### 5. Audited Financial Indicators (Metrics Grid)
+A grid of 9 crucial financial ratios extracted from live filings:
+* **P/E Ratio** & **Forward P/E** (valuation multiples)
+* **PEG Ratio** (growth-adjusted valuation)
+* **Price to Book (P/B)** (asset backing)
+* **Trailing & Forward EPS** (profitability per share)
+* **Operating & Profit Margins** (core efficiency)
+* **Debt to Equity** (balance sheet leverage)
+* **Current Ratio** (liquidity buffer)
+* **Revenue Growth** & **Total Revenue** (growth metrics)
+
+### 6. Positive & Risk Catalysts
+* Two side-by-side cards breaking down specific investment arguments.
+* **Positive Catalysts (＋)** list factors driving the bullish case.
+* **Risk Catalysts (－)** list risks, valuation premiums, or leverage flags.
+
+### 7. Auditor Reasoning Transcript
+A scrollable card that prints a clean, markdown-rendered transcript of the agent's complete logical workflow, summarizing why the verdict was made.
+
+---
+
+## 5. Technical Stack & Architecture
 
 ### Tech Stack
+- **Framework**: Next.js (modular pages and API routes).
+- **Database**: PostgreSQL (Prisma ORM for schema sync and history storage).
 - **AI Orchestration**: LangChain.js Core (`@langchain/core`, `@langchain/google-genai`).
 - **Reasoning Model**: Google Gemini (`gemini-2.5-flash`).
-- **Data Crawling**: Custom HTTP parsing loaders (no external paid keys required).
-- **Web Scraping**: `cheerio` (retrieves article text paragraphs for grounding).
-- **Styling**: Vanilla CSS (incorporates viewport sliding grids, custom scrollbars, animated stepper components, and active rings).
-- **Architecture**: Modular React Component structure inside Next.js.
+- **Data Scraping**: `cheerio` (web crawler for news text paragraphs).
+- **Styling**: Vanilla CSS (incorporates viewport sliding grids, glassmorphism, animated stepper components, and responsive cards).
 
 ### Directory Structure
 ```
 ├── components/
-│   ├── AnalystConsensus.js       # Wall Street consensus trends (SVG)
+│   ├── AnalystConsensus.js       # Wall Street consensus trends (SVG progress bar)
 │   ├── ConfidenceGauge.js        # Circular SVG scoring rating (viewBox scalable)
 │   ├── ConsolePage.js            # Three-column Bloomberg-style workspace layout
 │   ├── DynamicParticleSphere.js  # Canvas orbital nodes grid background animation
 │   ├── HistoricalEarningsChart.js# Interactive SVG annual area/line chart
 │   ├── LandingPage.js            # Cinematic product introduction showcase
+│   ├── ProfileModal.js           # User profiles, login/signup inputs, and OTP actions
 │   └── PremiumLogo.js            # Dynamic logo container with fallbacks
 ├── lib/
+│   ├── auth.js                   # JWT signing, verify tokens, password hashing
+│   ├── db.js                     # Global Prisma client provider
 │   ├── investAgent.js            # LangChain LCEL prompt chaining and schema binding
-│   └── yahooFinance.js           # Quote data scraping resolver
+│   └── yahooFinance.js           # Quote data scraping resolver & mock fallbacks
 ├── pages/
 │   ├── api/
-│   │   └── analyze.js            # Node backend endpoint mapping and error catcher
+│   │   ├── analyze.js            # Node backend endpoint mapping and error catcher
+│   │   ├── search-suggestions.js # Autocomplete ticker suggester
+│   │   └── auth/                 # Login, Signup, OTP, History sync API endpoints
 │   └── index.js                  # Clean pages entry router (swaps Landing & Console)
+├── prisma/
+│   ├── schema.prisma             # PostgreSQL database schemas
+│   └── migrations/               # Prisma migration files
 ├── public/
-│   ├── logo.png                  # Place your custom branding image here
-│   └── placeholder.txt           # Static assets placeholder
+│   ├── screenshots/              # README guide images
+│   └── logo.png                  # Place your custom branding image here
 ├── styles/
 │   └── globals.css               # Base styles, grids, gradients, and custom animations
 ```
 
 ---
 
-## 3. How to Run It
+## 6. How to Run Locally
 
 ### Prerequisites
 - Node.js (version 18 or higher; tested on v22.17)
@@ -67,9 +139,12 @@ AURORA transforms complex spreadsheets and scattered dashboards into a premium, 
    ```
 
 ### Configuration (.env)
-A `.env` file must be located in the root directory. Add your Gemini API key:
+Create a `.env` file in the root folder containing:
 ```env
-GEMINI_API_KEY=your_gemini_api_key_here
+DATABASE_URL="your-postgresql-neon-database-url"
+JWT_SECRET="your-jwt-auth-session-key"
+GEMINI_API_KEY="your-google-gemini-api-key"
+NEXT_PUBLIC_GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"
 ```
 
 ### Running the App
@@ -81,57 +156,7 @@ GEMINI_API_KEY=your_gemini_api_key_here
    ```
    http://localhost:3000
    ```
-3. (Optional) Run the terminal pipeline validation script:
+3. Run the terminal pipeline validation script:
    ```bash
    node scratch/run_test.mjs
    ```
-
----
-
-## 4. Custom Branding (Adding Your Logo)
-AURORA supports custom logo integration seamlessly:
-* Place your logo image file inside the public directory at **`d:\INSIDEIIM\public\logo.png`**.
-* The header automatically detects the file and renders your branding.
-* If no file is placed there, the component catches the event and falls back to rendering the premium vector sign and `AURORA` label, avoiding broken image links.
-
----
-
-## 5. Key Decisions & Trade-Offs
-
-### 1. Structured Output Binding (LCEL `.withStructuredOutput`)
-- **Decision**: bound the Zod validation schema (`investmentAnalysisSchema`) directly to the Gemini model using LangChain Expression Language (LCEL) chains: `const chain = prompt.pipe(structuredModel)`.
-- **Why**: Eliminates the risk of model hallucinations, does away with brittle custom JSON regex string cleans, and forces the API to conform strictly to our required output structure.
-
-### 2. High-Performance Scrapers vs. Paid Key Databases
-- **Decision**: Developed robust quote crawlers in `lib/yahooFinance.js` that retrieve live reports from public endpoints.
-- **Why**: Paid API keys (Alpha Vantage/Finnhub) limit free tiers to 25 requests daily. Evaluators testing multiple companies in a row would crash the app. Scraping ensures 100% uptime with zero query caps or rate blocks for recruiters.
-
-### 3. LocalStorage Caching vs. Remote Database
-- **Decision**: Stored search history and custom risk selections in the browser's `localStorage` cache.
-- **Why**: Removes the need for the evaluator to download, setup, and host a local MongoDB/Postgres server, aligning with the "zero-setup run" goal while maintaining complete state persistence.
-
----
-
-## 6. Example Runs
-
-### Example Run 1: Tesla, Inc. (TSLA)
-- **Risk Tolerance**: Medium (Balanced)
-- **Verdict**: **PASS** (Confidence: 65%)
-- **Summary**: Although Tesla maintains outstanding solvency ratios (Debt/Equity: 18.74%) and dominant market positioning, its valuation metrics (P/E ratio of ~380) are extremely premium. Under Medium risk guidelines, the current stock price implies speculative future cash flows that are not fully justified by current earnings.
-- **Pros**: Outstanding solvency, high balance sheet cash depth, leading global EV infrastructure.
-- **Cons**: Excessive P/E ratios, pricing compression from competition, slowing near-term vehicle deliveries.
-
-### Example Run 2: Apple Inc. (AAPL)
-- **Risk Tolerance**: Low (Conservative)
-- **Verdict**: **INVEST** (Confidence: 85%)
-- **Summary**: Apple Inc. continues to represent a premier defensive investment. Despite slow top-line growth (moderate revenue growth), the company generates massive free cash flows (over $100B) and exhibits a phenomenal return on equity (ROE) of over 140%.
-- **Pros**: Highly defensive cash generation, massive operating margins, strong ecosystem retention.
-- **Cons**: High trailing P/E relative to historic averages, legal antitrust reviews in the US and Europe.
-
----
-
-## 7. AI Chat Session Logs / Transcripts (Bonus)
-The transcript logs documenting our pair-programming cycles are preserved in the workspace configuration folder:
-- **Task list tracker**: [task.md](file:///C:/Users/Lenovo/.gemini/antigravity-ide/brain/8520e518-3e60-4a3c-8f52-8303ec91c86d/task.md)
-- **Technical plan**: [implementation_plan.md](file:///C:/Users/Lenovo/.gemini/antigravity-ide/brain/8520e518-3e60-4a3c-8f52-8303ec91c86d/implementation_plan.md)
-- **IDE Trajectory Logs**: Conversation history and tool execution sequences are persisted in the system directory under `<appDataDir>\brain\8520e518-3e60-4a3c-8f52-8303ec91c86d\.system_generated\logs\transcript.jsonl`.
