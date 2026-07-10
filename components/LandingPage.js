@@ -298,7 +298,7 @@ export default function LandingPage({ onLaunch, onDirectSearch, isLoggedIn }) {
           <div className="flex justify-center">
             <button
               onClick={onLaunch}
-              className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-[#FF4B2B] px-10 py-4.5 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-2xl transition hover:-translate-y-0.5"
+              className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-[#FF4B2B] px-10 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-2xl transition hover:-translate-y-0.5"
             >
               Launch Research Console
               <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition" />

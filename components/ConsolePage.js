@@ -310,7 +310,7 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
                 onClick={() => setProfileOpen(true)}
                 className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-3.5 py-1.5 text-[10px] uppercase font-semibold text-white transition hover:border-[#FF7A3D]"
               >
-                <div className="h-4.5 w-4.5 rounded-full bg-gradient-to-br from-[#FF4B2B] to-[#FF7A3D] flex items-center justify-center text-[8px] font-bold text-white uppercase">
+                <div className="h-5 w-5 shrink-0 rounded-full bg-gradient-to-br from-[#FF4B2B] to-[#FF7A3D] flex items-center justify-center text-[8px] font-bold text-white uppercase">
                   {user.name ? user.name[0] : "U"}
                 </div>
                 <span className="hidden sm:inline font-semibold">{user.name || "Profile"}</span>
@@ -319,7 +319,7 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
 
             <button
               onClick={onBack}
-              className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] pl-3.5 pr-4.5 py-2 text-[10px] uppercase text-[#98A2B3] transition hover:border-[#FF4B2B] hover:text-white"
+              className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] pl-3.5 pr-5 py-2 text-[10px] uppercase text-[#98A2B3] transition hover:border-[#FF4B2B] hover:text-white"
             >
               <LogOut className="h-3.5 w-3.5" />
               <span className="tracking-[0.2em]">Exit Workspace</span>
@@ -398,7 +398,7 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
               <div className="mt-3 flex gap-3 items-start">
                 <div id="search-input-container" className="relative flex-1 flex flex-col">
                   <div className="relative flex items-center p-1 rounded-xl border border-white/10 bg-[#050608]/50 focus-within:border-[#FF4B2B] transition duration-200">
-                    <Search className="h-4.5 w-4.5 text-white/30 ml-3.5" />
+                    <Search className="h-5 w-5 text-white/30 ml-3.5" />
                     <input
                       value={company}
                       onChange={(e) => handleInputChange(e.target.value)}

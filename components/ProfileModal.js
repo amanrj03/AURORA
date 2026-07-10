@@ -46,11 +46,11 @@ export default function ProfileModal({ isOpen, onClose, user, token, onUpdateUse
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/5 pb-4">
           <div className="flex items-center gap-2">
-            <User className="h-4.5 w-4.5 text-[#FF7A3D]" />
+            <User className="h-5 w-5 text-[#FF7A3D]" />
             <h3 className="text-sm font-semibold uppercase tracking-wider text-white">Profile Workspace</h3>
           </div>
           <button onClick={onClose} className="text-[#98A2B3] hover:text-white transition">
-            <X className="h-4.5 w-4.5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
@@ -114,7 +114,7 @@ export default function ProfileModal({ isOpen, onClose, user, token, onUpdateUse
             <button
               type="button"
               onClick={onLogout}
-              className="rounded-xl border border-red-500/20 bg-red-500/5 px-4.5 py-2.5 text-xs font-semibold uppercase tracking-wider text-red-400 hover:bg-red-500/10 transition flex items-center gap-1.5"
+              className="rounded-xl border border-red-500/20 bg-red-500/5 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-red-400 hover:bg-red-500/10 transition flex items-center gap-1.5"
             >
               <LogOut className="h-3.5 w-3.5" />
               Sign Out
