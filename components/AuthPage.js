@@ -562,7 +562,21 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
               <span className="text-[9px] uppercase tracking-widest text-[#98A2B3]/50">Or authenticate with</span>
               
               {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
-                <div id="google-signin-btn" className="relative z-20" />
+                <div className="flex flex-col items-center gap-3">
+                  <div id="google-signin-btn" className="relative z-20" />
+                  <p className="text-[9px] text-[#98A2B3]/60 max-w-[260px] text-center leading-relaxed font-sans">
+                    By authenticating with Google, you agree to our{" "}
+                    <a
+                      href="/terms"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[#FF7A3D] hover:underline font-semibold"
+                    >
+                      Terms &amp; Conditions
+                    </a>{" "}
+                    and authorize AURORA to run financial audits and crawl reports.
+                  </p>
+                </div>
               ) : (
                 <div className="text-[9px] text-yellow-500/70 border border-yellow-500/10 p-3 rounded-lg bg-yellow-500/5 text-center leading-relaxed">
                   Google Client ID is not configured in .env.<br />
