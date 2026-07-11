@@ -96,7 +96,7 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
       const data = await res.json().catch(() => ({ error: "Signup endpoint error. Make sure you restart your Next.js dev server to load the new .env settings!" }));
       if (!res.ok) throw new Error(data.error || "Registration failed");
 
-      setSuccessMsg("Account pre-created. Please verify your OTP code.");
+      setSuccessMsg("Verification code sent! Please check your email to activate your account.");
       setAuthState("verify-otp");
     } catch (e) {
       setError(e.message);
