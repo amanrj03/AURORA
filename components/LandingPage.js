@@ -328,7 +328,6 @@ export default function LandingPage({ onLaunch, onDirectSearch, isLoggedIn }) {
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-wider text-[#98A2B3]/50">
           <span>© {new Date().getFullYear()} Aurora. All rights reserved.</span>
           <div className="flex gap-6 font-semibold">
-            <a href="#" className="hover:text-white transition">Privacy Policy</a>
             <a href="/terms" target="_blank" rel="noreferrer" className="hover:text-white transition text-[#FF7A3D]">Terms &amp; Conditions</a>
             <a href="#" className="hover:text-white transition">Altuni Labs</a>
           </div>
