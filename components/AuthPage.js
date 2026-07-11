@@ -251,7 +251,6 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
             <div className="text-center space-y-1.5">
               <h3 className="text-base font-bold text-white uppercase tracking-wider">Account Verification</h3>
               <p className="text-xs text-[#98A2B3]">Enter the 6-digit OTP code sent to <strong>{email}</strong>.</p>
-              <p className="text-[10px] text-[#FF7A3D]/80">// Dev log: code is printed in server console logs</p>
             </div>
 
             <div className="space-y-1.5">
