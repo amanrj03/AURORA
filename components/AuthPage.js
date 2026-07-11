@@ -58,7 +58,7 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
       const res = await fetch("/api/auth/google", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ credential: response.credential })
+        body: JSON.stringify({ credential: response.credential, mode: activeTab })
       });
       const data = await res.json().catch(() => ({ error: "Google verification route error. Make sure your dev server is restarted." }));
       if (!res.ok) throw new Error(data.error || "Google sign-in failed");
@@ -564,18 +564,20 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
               {process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ? (
                 <div className="flex flex-col items-center gap-3">
                   <div id="google-signin-btn" className="relative z-20" />
-                  <p className="text-[9px] text-[#98A2B3]/60 max-w-[260px] text-center leading-relaxed font-sans">
-                    By authenticating with Google, you agree to our{" "}
-                    <a
-                      href="/terms"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[#FF7A3D] hover:underline font-semibold"
-                    >
-                      Terms &amp; Conditions
-                    </a>{" "}
-                    and authorize AURORA to run financial audits and crawl reports.
-                  </p>
+                  {activeTab === "signup" && (
+                    <p className="text-[9px] text-[#98A2B3]/60 max-w-[260px] text-center leading-relaxed font-sans">
+                      By authenticating with Google, you agree to our{" "}
+                      <a
+                        href="/terms"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#FF7A3D] hover:underline font-semibold"
+                      >
+                        Terms &amp; Conditions
+                      </a>{" "}
+                      and authorize AURORA to run financial audits and crawl reports.
+                    </p>
+                  )}
                 </div>
               ) : (
                 <div className="text-[9px] text-yellow-500/70 border border-yellow-500/10 p-3 rounded-lg bg-yellow-500/5 text-center leading-relaxed">
