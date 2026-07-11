@@ -5,6 +5,8 @@ import PremiumLogo from "./PremiumLogo";
 export default function AuthPage({ onBack, onAuthSuccess }) {
   const [activeTab, setActiveTab] = useState("login"); // "login" | "signup"
   const [authState, setAuthState] = useState("form"); // "form" | "verify-otp" | "forgot-password" | "reset-password"
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [permissionGranted, setPermissionGranted] = useState(true);
   
   // Input fields
   const [name, setName] = useState("");
@@ -67,6 +69,16 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGuestLogin = () => {
+    const guestUser = {
+      id: "guest",
+      name: "Guest User",
+      email: "guest@aurora.app",
+      isGuest: true
+    };
+    onAuthSuccess("guest", guestUser);
   };
 
   const handleSignupSubmit = async (e) => {
@@ -500,10 +512,45 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
                   </div>
                 </div>
 
+                {/* Consent Checkboxes */}
+                <div className="space-y-3 pt-2 text-left">
+                  <label className="flex items-start gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={termsAccepted}
+                      onChange={(e) => setTermsAccepted(e.target.checked)}
+                      className="mt-0.5 rounded border-white/10 bg-[#050608]/50 text-[#FF4B2B] focus:ring-[#FF4B2B]/30 h-3.5 w-3.5 transition"
+                    />
+                    <span className="text-[10px] text-[#98A2B3] leading-relaxed">
+                      I agree to the{" "}
+                      <a
+                        href="/terms"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#FF7A3D] hover:underline inline-flex items-center gap-0.5 font-semibold"
+                      >
+                        Terms &amp; Conditions
+                      </a>
+                    </span>
+                  </label>
+
+                  <label className="flex items-start gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={permissionGranted}
+                      onChange={(e) => setPermissionGranted(e.target.checked)}
+                      className="mt-0.5 rounded border-white/10 bg-[#050608]/50 text-[#FF4B2B] focus:ring-[#FF4B2B]/30 h-3.5 w-3.5 transition"
+                    />
+                    <span className="text-[10px] text-[#98A2B3] leading-relaxed">
+                      I authorize AURORA to retrieve financial metrics and scraped report summaries for my queries.
+                    </span>
+                  </label>
+                </div>
+
                 <button
                   type="submit"
-                  disabled={loading || !name || !email || !password}
-                  className="w-full rounded-xl bg-[#FF4B2B] py-3 text-xs font-semibold uppercase tracking-wider text-white disabled:opacity-40 hover:bg-[#FF4B2B]/90 transition shadow-lg"
+                  disabled={loading || !name || !email || !password || !termsAccepted}
+                  className="w-full rounded-xl bg-[#FF4B2B] py-3 text-xs font-semibold uppercase tracking-wider text-white disabled:opacity-40 hover:bg-[#FF4B2B]/90 transition shadow-lg mt-2"
                 >
                   {loading ? "Creating Account…" : "Register"}
                 </button>
@@ -522,6 +569,16 @@ export default function AuthPage({ onBack, onAuthSuccess }) {
                   Add <strong>NEXT_PUBLIC_GOOGLE_CLIENT_ID</strong> to verify Google sign-in.
                 </div>
               )}
+
+              <div className="pt-3 border-t border-white/5 w-full text-center">
+                <button
+                  type="button"
+                  onClick={handleGuestLogin}
+                  className="text-[10px] uppercase tracking-widest text-[#FF7A3D] hover:text-white transition font-semibold hover:underline"
+                >
+                  Continue as Guest
+                </button>
+              </div>
             </div>
           </>
         )}

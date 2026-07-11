@@ -98,7 +98,7 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
     }
 
     const loadDbHistory = async () => {
-      if (!token) return;
+      if (!token || token === "guest") return;
       try {
         const res = await fetch("/api/auth/history", {
           headers: { Authorization: `Bearer ${token}` }
@@ -230,7 +230,7 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
         }
       }
 
-      if (token) {
+      if (token && token !== "guest") {
         const newItem = {
           company: searchVal,
           risk: riskTolerance,
@@ -252,6 +252,17 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
             });
           }
         }).catch(err => console.error("Error saving history:", err));
+      } else if (token === "guest") {
+        const localItem = {
+          id: `guest-${Date.now()}`,
+          company: searchVal,
+          risk: riskTolerance,
+          result: data
+        };
+        setHistory((h) => {
+          const filtered = h.filter((item) => item.company !== searchVal);
+          return [localItem, ...filtered].slice(0, 10);
+        });
       }
     } catch (e) {
       clearInterval(stepTimer);
@@ -273,6 +284,10 @@ export default function ConsolePage({ onBack, initialQuery = "", user, token, on
   const clearHistory = async () => {
     if (!token) return;
     setHistory([]);
+    if (token === "guest") {
+      pushLog("✓ Guest local session history cleared");
+      return;
+    }
     try {
       const res = await fetch("/api/auth/history", {
         method: "DELETE",

@@ -329,7 +329,7 @@ export default function LandingPage({ onLaunch, onDirectSearch, isLoggedIn }) {
           <span>© {new Date().getFullYear()} Aurora. All rights reserved.</span>
           <div className="flex gap-6 font-semibold">
             <a href="#" className="hover:text-white transition">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition">Terms of Service</a>
+            <a href="/terms" target="_blank" rel="noreferrer" className="hover:text-white transition text-[#FF7A3D]">Terms &amp; Conditions</a>
             <a href="#" className="hover:text-white transition">Altuni Labs</a>
           </div>
         </div>
