@@ -8,20 +8,28 @@
 
 ---
 
+## 1. Overview — What It Does
 AURORA is a cinematic, professional-grade AI investment research workspace that automates equity analysis on public stocks. Leveraging a multi-agent orchestration pipeline, AURORA resolves search queries to exact exchange listings, scrapes financial statement records, parses live market news for grounding, and audits company metrics against strict margin and solvency guidelines using generative AI. 
+
+### Core Features:
+* **Zero-Key Web Scraping**: Extracts company stats and news directly from public financial portals, bypassing the need for paid API keys.
+* **Cinematic Dark Dashboard**: High-fidelity, Bloomberg-style interface with step-by-step pipeline animations, responsive SVG charts, and confidence gauges.
+* **Audit Pipeline Stepper**: Visualizes the research lifecycle in real-time, detailing search resolution, statement crawling, news extraction, and Gemini reasoning.
+* **Credentials Syncing**: Dual API Key configurations enabling server-side `.env` defaults or client-side dynamic key loading stored in browser `localStorage`.
+* **Prisma Database Syncing**: Stores search history, query counts, and analysis states securely in a PostgreSQL database (Prisma Client).
 
 ---
 
-## 1. Landing Page Showcase
+## 2. Onboarding & Layout Showcase
+
+### Landing Page Showcase
 The welcoming product landing page showcases a premium, moving-grid design with orbital canvas particles that respond to the user's cursor.
 * **Launch Control**: Allows instant login/signup and redirects users to the secure research console.
 * **Instant Search**: Features an autocomplete search field that suggests matches character-by-character.
 
 ![AURORA Landing Page](/public/screenshots/landing_page.png)
 
----
-
-## 2. How the Research Console Works
+### Research Console Workspace
 The console workspace is structured as a three-column Bloomberg-style layout designed for clarity and analytical focus:
 1. **Left Sidebar (History & Audit Log)**: Tracks past query histories. Clicking any item instantly re-hydrates the dashboard with the saved analysis. Includes a database sync trigger and a "Clear History" button.
 2. **Center Pane (Research Board)**: The main command center housing the query input, live stepper, verdict panel, charts, and metrics.
@@ -31,7 +39,9 @@ The console workspace is structured as a three-column Bloomberg-style layout des
 
 ---
 
-## 3. Step-by-Step Audit Pipeline
+## 3. How It Works — Approach & Architecture
+
+### Step-by-Step Audit Pipeline
 When you search a company or select a ticker from the autocomplete dropdown, AURORA starts a 5-step auditing sequence:
 1. **Resolving Ticker**: Searches the market for matching listings (e.g. mapping "Samsung" to `005930.KS`).
 2. **Fetching Financials**: Downloads the company profile, core stats (P/E ratio, PEG, profit margins), and historical statements.
@@ -39,56 +49,7 @@ When you search a company or select a ticker from the autocomplete dropdown, AUR
 4. **Gemini Analysis**: Feeds the grounded data into a custom prompt template evaluated by `gemini-2.5-flash` under Zod validation schemas.
 5. **Compiling Report**: Formats the final investment decision, confidence score, catalysts, and reasoning.
 
----
-
-## 4. Dashboard Breakdown
-Once the analysis completes, the dashboard updates with the following visual panels:
-
-### 1. Compliance Decision & SVG Confidence Gauge
-* Displays the final rating verdict: **INVEST** (emerald theme) or **PASS** (amber/red theme).
-* Houses a custom circular **Confidence Gauge** rendering the AI's confidence percentage as a smooth, animated SVG arc.
-
-### 2. Company Information Card
-* Shows the listing name, ticker, and exchange (e.g. `005930.KS · Korea Exchange`).
-* Includes a clickable link to visit the corporate website alongside the business summary description.
-
-### 3. Financial Trajectory SVG Chart
-* A custom, responsive SVG line and filled-area graph charting the last 4 years of annual financial history.
-* Displays **Revenue** (orange line) and **Net Earnings** (red line) side-by-side. 
-* Uses flexbox wrap layouts to ensure labels and legends stack cleanly on narrow mobile devices.
-
-### 4. Wall Street Consensus Bar
-* A segmented horizontal progress bar aggregating professional recommendations.
-* Dynamically color-coded to visualize:
-  * **Buy (Green)**: Combination of Buy + Strong Buy ratings.
-  * **Hold (Gray)**: Neutral ratings.
-  * **Sell (Red)**: Combination of Sell + Strong Sell ratings.
-* Displays the exact count and percentage of analyst inputs covering the stock.
-
-### 5. Audited Financial Indicators (Metrics Grid)
-A grid of 9 crucial financial ratios extracted from live filings:
-* **P/E Ratio** & **Forward P/E** (valuation multiples)
-* **PEG Ratio** (growth-adjusted valuation)
-* **Price to Book (P/B)** (asset backing)
-* **Trailing & Forward EPS** (profitability per share)
-* **Operating & Profit Margins** (core efficiency)
-* **Debt to Equity** (balance sheet leverage)
-* **Current Ratio** (liquidity buffer)
-* **Revenue Growth** & **Total Revenue** (growth metrics)
-
-### 6. Positive & Risk Catalysts
-* Two side-by-side cards breaking down specific investment arguments.
-* **Positive Catalysts (＋)** list factors driving the bullish case.
-* **Risk Catalysts (－)** list risks, valuation premiums, or leverage flags.
-
-### 7. Auditor Reasoning Transcript
-A scrollable card that prints a clean, markdown-rendered transcript of the agent's complete logical workflow, summarizing why the verdict was made.
-
----
-
-## 5. Technical Stack & Architecture
-
-### Tech Stack
+### Technical Stack & Core Architecture
 - **Framework**: Next.js (modular pages and API routes).
 - **Database**: PostgreSQL (Prisma ORM for schema sync and history storage).
 - **AI Orchestration**: LangChain.js Core (`@langchain/core`, `@langchain/google-genai`).
@@ -96,41 +57,68 @@ A scrollable card that prints a clean, markdown-rendered transcript of the agent
 - **Data Scraping**: `cheerio` (web crawler for news text paragraphs).
 - **Styling**: Vanilla CSS (incorporates viewport sliding grids, glassmorphism, animated stepper components, and responsive cards).
 
-### Directory Structure
-```
-├── components/
-│   ├── AnalystConsensus.js       # Wall Street consensus trends (SVG progress bar)
-│   ├── ConfidenceGauge.js        # Circular SVG scoring rating (viewBox scalable)
-│   ├── ConsolePage.js            # Three-column Bloomberg-style workspace layout
-│   ├── DynamicParticleSphere.js  # Canvas orbital nodes grid background animation
-│   ├── HistoricalEarningsChart.js# Interactive SVG annual area/line chart
-│   ├── LandingPage.js            # Cinematic product introduction showcase
-│   ├── ProfileModal.js           # User profiles, login/signup inputs, and OTP actions
-│   └── PremiumLogo.js            # Dynamic logo container with fallbacks
-├── lib/
-│   ├── auth.js                   # JWT signing, verify tokens, password hashing
-│   ├── db.js                     # Global Prisma client provider
-│   ├── investAgent.js            # LangChain LCEL prompt chaining and schema binding
-│   └── yahooFinance.js           # Quote data scraping resolver & mock fallbacks
-├── pages/
-│   ├── api/
-│   │   ├── analyze.js            # Node backend endpoint mapping and error catcher
-│   │   ├── search-suggestions.js # Autocomplete ticker suggester
-│   │   └── auth/                 # Login, Signup, OTP, History sync API endpoints
-│   └── index.js                  # Clean pages entry router (swaps Landing & Console)
-├── prisma/
-│   ├── schema.prisma             # PostgreSQL database schemas
-│   └── migrations/               # Prisma migration files
-├── public/
-│   ├── screenshots/              # README guide images
-│   └── logo.png                  # Place your custom branding image here
-├── styles/
-│   └── globals.css               # Base styles, grids, gradients, and custom animations
-```
+---
+
+## 4. Key Decisions & Trade-offs
+
+* **Zero-Key Public Web Scraper instead of Paid APIs**: 
+  * *Why*: Decided to crawl/scrape Yahoo Finance directly using a custom parser instead of using paid APIs (like AlphaVantage, Bloomberg, or FMP).
+  * *Trade-off*: Eliminates setup friction and costs for reviewers, but makes the tool susceptible to external website HTML layout changes and rate-limiting.
+* **Cheerio-based News Grounding over Heavy RAG Databases**: 
+  * *Why*: Scrapes the top news article bodies using Cheerio to ground the model on the fly.
+  * *Trade-off*: Provides extremely fast execution and keeps token costs low, but lacks permanent vector embeddings or historical lookup capabilities.
+* **Gemini-2.5-Flash with Zod Structured Output**: 
+  * *Why*: Selected `gemini-2.5-flash` over `gemini-2.5-pro` or `gpt-4o` for its massive context window, fast reasoning speeds, and low latency.
+  * *Trade-off*: Provides immediate responses, but may occasionally output slightly less detailed summaries than its heavier `pro` counterparts. We offset this by structuring outputs strictly using Zod schemas to guarantee parsability.
+* **Vanilla CSS for Styling**: 
+  * *Why*: Avoided TailwindCSS to prevent utility-class clutter and ensure absolute control over neon glow styles, glassmorphism containers, animated terminal blocks, and custom CSS particles.
+  * *Trade-off*: Takes longer to customize, but yields a distinct, premium, and unified cinematic workspace.
+* **Failsafe Database Proxy**: 
+  * *Why*: Built a database fallback proxy in the API routes. If `DATABASE_URL` is omitted, the app compiles cleanly and runs in "Guest Mode" rather than crashing.
 
 ---
 
-## 6. How to Run Locally
+## 5. Example Runs & Agent Outputs
+
+### Example 1: Apple Inc. (AAPL)
+* **Verdict**: **INVEST**
+* **Confidence**: **85%**
+* **Financial Highlights**: P/E: 29.8 · Operating Margin: 30.7% · Debt-to-Equity: 1.45
+* **AI Analysis Summary**:
+  > Apple displays robust free cash flow generation and unmatched ecosystem lock-in. Solvency metrics remain strong despite high leverage, which is backed by reliable hardware margins and rapid service growth. 
+  > * **Positive Catalysts**: Strong Services revenue momentum; high customer loyalty; expansion of Apple Intelligence.
+  > * **Risk Catalysts**: Valuation multiple is near the historical high end; minor hardware stagnation in Asian markets.
+
+### Example 2: Tesla Inc. (TSLA)
+* **Verdict**: **PASS**
+* **Confidence**: **65%**
+* **Financial Highlights**: P/E: 72.4 · Operating Margin: 8.2% · Debt-to-Equity: 0.12
+* **AI Analysis Summary**:
+  > Tesla maintains a fortress balance sheet with near-zero debt, but the trailing P/E multiple represents a high growth premium. Short-term earnings growth is lagging due to competitive EV pricing.
+  > * **Positive Catalysts**: Industry-leading battery manufacturing efficiency; significant cash reserves.
+  > * **Risk Catalysts**: Margin compression from global automotive pricing wars; high regulatory credit revenue reliance.
+
+### Example 3: NVIDIA Corporation (NVDA)
+* **Verdict**: **INVEST**
+* **Confidence**: **90%**
+* **Financial Highlights**: P/E: 65.2 · PEG Ratio: 1.15 · Profit Margin: 55.0%
+* **AI Analysis Summary**:
+  > NVIDIA represents a high-growth investment backed by a virtual monopoly in AI hardware. Solvency ratios are pristine, and the PEG ratio of 1.15 demonstrates that the high multiple is justified by actual triple-digit revenue growth.
+  > * **Positive Catalysts**: Massive Blackwell GPU backlog; robust software moat via CUDA ecosystems.
+  > * **Risk Catalysts**: Customer concentration risks; global supply chain dependencies.
+
+---
+
+## 6. What We Would Improve with More Time
+
+* **Multi-Agent Coordination (LangGraph)**: Transition the single-agent pipeline into a multi-agent hierarchy with dedicated agents: a Web Search Researcher, a Balance Sheet Auditor, and a Portfolio Evaluator.
+* **Comprehensive PDF Report Exporting**: Add server-side or client-side PDF compilation to let users download or email formatted visual audit summaries.
+* **Historical Chart Comparisons**: Expand the single-ticker chart layout to plot multiple ticker financials on the same SVG grid to visually benchmark peer companies.
+* **Portfolio Integration**: Implement simulated user portfolios where audited stocks can be added or subtracted to check asset allocation impacts.
+
+---
+
+## 7. How to Run Locally
 
 ### Prerequisites
 - Node.js (version 18 or higher)
