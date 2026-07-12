@@ -1,5 +1,13 @@
 # AURORA — Premium AI Investment Research Suite
 
+> [!IMPORTANT]
+> **Production Live Link & Test Credentials**
+> * **Web Address:** [aurora.amanranjan.site](https://aurora.amanranjan.site)
+> * **Login Email:** `testing@aurora.com`
+> * **Login Password:** `password123`
+
+---
+
 AURORA is a cinematic, professional-grade AI investment research workspace that automates equity analysis on public stocks. Leveraging a multi-agent orchestration pipeline, AURORA resolves search queries to exact exchange listings, scrapes financial statement records, parses live market news for grounding, and audits company metrics against strict margin and solvency guidelines using generative AI. 
 
 ---
@@ -7,7 +15,7 @@ AURORA is a cinematic, professional-grade AI investment research workspace that 
 ## 1. Landing Page Showcase
 The welcoming product landing page showcases a premium, moving-grid design with orbital canvas particles that respond to the user's cursor.
 * **Launch Control**: Allows instant login/signup and redirects users to the secure research console.
-* **Instant Search**: Features an autocomplete search field that suggestions matches character-by-character.
+* **Instant Search**: Features an autocomplete search field that suggests matches character-by-character.
 
 ![AURORA Landing Page](/public/screenshots/landing_page.png)
 
@@ -125,7 +133,7 @@ A scrollable card that prints a clean, markdown-rendered transcript of the agent
 ## 6. How to Run Locally
 
 ### Prerequisites
-- Node.js (version 18 or higher; tested on v22.17)
+- Node.js (version 18 or higher)
 - npm or yarn
 
 ### Installation
@@ -176,8 +184,4 @@ npx prisma db push
 2. Open your browser and navigate to:
    ```
    http://localhost:3000
-   ```
-3. (Optional) Run the terminal pipeline validation script to verify scraper/agent bindings directly in your shell:
-   ```bash
-   node scratch/run_test.mjs
    ```
